@@ -1,0 +1,27 @@
+name: Open PR to Main
+
+description: Open PR to Main
+
+inputs:
+  tag:
+    required: true
+    description: tag
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        ref: "main"
+
+    - name: Create PR to main
+      run: gh pr create --base=main --head=release/${{ inputs.tag }} --title="[Release] version ${{ inputs.tag }} to production" --body="Pull Request ${{ inputs.tag }} to Production"
+    - name: Send Message to Slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{job.status}}
+        username: "CREATE_PR|${{github.event.repository.name}}|${{ inputs.tag }}"
+        author_name: ${{github.workflow}}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest
+      if: always()
