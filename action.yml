@@ -17,6 +17,8 @@ runs:
 
     - name: Create PR to main
       run: gh pr create --base=main --head=release/${{ inputs.tag }} --title="[Release] version ${{ inputs.tag }} to production" --body="Pull Request ${{ inputs.tag }} to Production"
+      shell: bash
+      
     - name: Send Message to Slack
       uses: 8398a7/action-slack@v3
       with:
